@@ -22,6 +22,7 @@
     "express": "^4.16.2",
     "feedme": "^1.1.0",
     "http": "0.0.0",
+    "request": "^2.83.0",
     "serve-favicon": "^2.4.5"
   }
 }
