@@ -1,0 +1,28 @@
+{
+  "name": "bloggrid",
+  "version": "1.0.0",
+  "description": "Reads VH1 RSS Feed and Makes a Grid of blog post photos",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dan2600/bloggrid.git"
+  },
+  "author": "Dan Spagnoli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dan2600/bloggrid/issues"
+  },
+  "homepage": "https://github.com/dan2600/bloggrid#readme",
+  "dependencies": {
+    "compression": "^1.7.1",
+    "express": "^4.16.2",
+    "express-xml-bodyparser": "^0.3.0",
+    "feedme": "^1.1.0",
+    "http": "0.0.0",
+    "serve-favicon": "^2.4.5"
+  }
+}
