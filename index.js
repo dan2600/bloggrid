@@ -24,7 +24,10 @@ var port = process.env.PORT || 8080;
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
     client.set("timestamp", Date.now());
-    console.log("HI I got"+client.get("timestamp"));
+    client.get("timestamp", function (err, reply) {
+    console.log("HI I got"+reply);
+});
+   
     rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
         var parser = new FeedMe(true);
         parser.on('error', (d) => {
