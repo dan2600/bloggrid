@@ -41,14 +41,13 @@ app.get('/rssfeed', function(req, res) {
                     client.set("timestamp", Date.parse("now"));
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     res.set('content-type', 'text/json');
-                    res.send(parser.done());
+                    res.send(JSON.stringify(parser.done()));
                 });
                 ror.pipe(parser);
             });
         } else {
             console.log("sending cached XML");
             client.get("xmlCache", function(err, reply) {
-                console.log(reply);
                 res.set('content-type', 'text/json');
                 res.send(reply);
             });
