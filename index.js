@@ -26,6 +26,8 @@ app.get('/rssfeed', function(req, res) {
    
     client.get("timestamp", function (err, reply) {
     var oldTime = Date.parse(reply);
+    console.log("old time" + oldTime.add(1).minutes());
+    console.log("the time" +  Date.parse("now")); 
     if(oldTime.add(1).minutes() > Date.parse("now"))
     {
         console.log("it worked!")
