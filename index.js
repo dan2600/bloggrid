@@ -39,7 +39,7 @@ app.get('/rssfeed', function(req, res) {
                 });
                 parser.on('end', () => {
                     client.set("timestamp", Date.parse("now"));
-                    client.set("xmlCache", parser.done());
+                    client.set("xmlCache", JSON.stringify(parser.done()));
                     res.set('content-type', 'text/json');
                     res.send(parser.done());
                 });
