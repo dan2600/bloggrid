@@ -48,6 +48,7 @@ app.get('/rssfeed', function(req, res) {
         } else {
             console.log("sending cached XML");
             client.get("xmlCache", function(err, reply) {
+                console.log(reply);
                 res.set('content-type', 'text/json');
                 res.send(reply);
             });
