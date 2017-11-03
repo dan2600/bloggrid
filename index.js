@@ -30,16 +30,8 @@ app.get('/rssfeed', function(req, res) {
     console.log("the time " +  Date.parse("now")); 
     if(oldTime.add(1).minutes() < Date.parse("now"))
     {
-        console.log("it worked!")
-        client.set("timestamp", Date.parse("now"));    
-    }
-    else
-    {
-        console.log("wait")
-    }
-});
-   
-    rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
+        console.log("getting new RSS data");
+            rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
         var parser = new FeedMe(true);
         parser.on('error', (d) => {
             console.log("RSS Feed read bad! Ugh!");
@@ -47,12 +39,25 @@ app.get('/rssfeed', function(req, res) {
             res.send({"error":true});
         });
         parser.on('end', () => {
+            client.set("timestamp", Date.parse("now"));
+            client.set("xmlCache", parser.done());
             res.set('content-type', 'text/json');
             res.send(parser.done());
         });
         ror.pipe(parser);
     });
+    }
+    else
+    {
+        console.log("sending cached XML");
+        client.get("xmlCache", function (err, reply) {
+             res.set('content-type', 'text/json');
+             res.send(reply);
+        });
+    }
 });
+   
+
 
 app.get('/*', function(req, res) {
     res.status(404);
