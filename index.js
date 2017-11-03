@@ -6,6 +6,7 @@ var app = express();
 var path = require("path");
 var bodyParser = require('body-parser');
 var FeedMe = require('feedme');
+require('datejs');
 //Setup
 app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
@@ -23,6 +24,7 @@ var port = process.env.PORT || 8080;
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
     client.set("timestamp", Date.now());
+    console.log("HI I got"+client.get("timestamp"));
     rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
         var parser = new FeedMe(true);
         parser.on('error', (d) => {
