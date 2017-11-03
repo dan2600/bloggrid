@@ -6,6 +6,10 @@ var app = express();
 var path = require("path");
 var bodyParser = require('body-parser');
 var FeedMe = require('feedme');
+var client = require('redis').createClient(process.env.REDIS_URL);
+var http = require('http').Server(app);
+var rssreqest = require('http');
+var port = process.env.PORT || 8080;
 require('datejs');
 //Setup
 app.use(compression());
@@ -15,11 +19,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-
-var client = require('redis').createClient(process.env.REDIS_URL);
-var http = require('http').Server(app);
-var rssreqest = require('http');
-var port = process.env.PORT || 8080;
 
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
