@@ -26,7 +26,7 @@ app.get('/rssfeed', function(req, res) {
     client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
 
-        if (oldTime.add(1).minutes() < Date.parse("now")) {
+        if (oldTime.add(1).hours() < Date.parse("now")) {
             rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
