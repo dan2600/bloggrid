@@ -14,12 +14,15 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+
+var client = require('redis').createClient(process.env.REDIS_URL);
 var http = require('http').Server(app);
 var rssreqest = require('http');
 var port = process.env.PORT || 8080;
 
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
+    client.set("timestamp", Date.now());
     rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
         var parser = new FeedMe(true);
         parser.on('error', (d) => {

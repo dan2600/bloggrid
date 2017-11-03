@@ -19,9 +19,11 @@
   "homepage": "https://github.com/dan2600/bloggrid#readme",
   "dependencies": {
     "compression": "^1.7.1",
+    "datejs": "^1.0.0-rc3",
     "express": "^4.16.2",
     "feedme": "^1.1.0",
     "http": "0.0.0",
+    "redis": "^2.8.0",
     "request": "^2.83.0",
     "serve-favicon": "^2.4.5"
   }
