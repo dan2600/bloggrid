@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.disable('x-powered-by');
 
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
