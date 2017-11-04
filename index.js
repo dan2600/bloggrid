@@ -19,7 +19,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
 
@@ -30,8 +29,10 @@ app.get('/rssfeed', function(req, res) {
             rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
-                    res.set('content-type', 'text/json');
-                    res.send({ "error": true });
+                    client.get("xmlCache", function(err, reply) {
+                        res.set('content-type', 'text/json');
+                        res.send(reply);
+                    });
                 });
                 parser.on('end', () => {
                     client.set("timestamp", Date.parse("now"));
@@ -51,7 +52,6 @@ app.get('/rssfeed', function(req, res) {
         }
     });
 });
-
 
 
 app.get('/*', function(req, res) {
