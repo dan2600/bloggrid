@@ -9,7 +9,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
 <style>
-h1{display:none}.crop img,.crop img:focus,a{-webkit-tap-highlight-color:transparent}.grid,.header,.loader{text-align:center}body{font-family:Montserrat,sans-serif;font-size:12px;margin:0}.grid{display:none;overflow:auto;max-width:960px;margin:15px auto auto;padding-left:12px}.athumb{vertical-align:top;position:relative;float:left;width:32.5%;min-width:32.5%;margin:2px;background-size:cover;-webkit-transition:all .1s ease-in;-webkit-transform:scale(1);-ms-transition:all .1s ease-in;-ms-transform:scale(1);-moz-transition:all .1s ease-in;-moz-transform:scale(1);transition:all .1s ease-in;transform:scale(1)}.crop,.crop img{position:absolute}.athumb::before{content:"";display:block;padding-top:100%}.crop{height:100%;overflow:hidden;top:0;left:0;bottom:0;right:0}.crop img{display:block;min-width:100%;min-height:100%;margin:auto;top:-100%;right:-100%;bottom:-100%;left:-100%}.athumb:hover{box-shadow:0 0 15px #000;z-index:900;-webkit-transition:all .1s ease-in;-webkit-transform:scale(1.025);-ms-transition:all .1s ease-in;-ms-transform:scale(1.025);-moz-transition:all .1s ease-in;-moz-transform:scale(1.025);transition:all .1s ease-in;transform:scale(1.025)}.header{width:100%}.header img{padding-bottom:10px}.header::after{display:block;margin-top:10px;content:" ";width:100%;height:1px;background-color:#000}.back img{width:35px;height:35px;margin:10px}.loader{padding:1em;margin:auto;display:block}.loader svg{width:330px;height:330px;fill:#000}@media (max-width:960px){.athumb{width:48%;margin:1%}.grid{padding-left:0}.crop img{min-width:0;max-width:50vw}}@media print{.grid{max-width:20cm;margin:auto}.back{display:none}.athumb{width:1cm;margin:0.05cm;page-break-before:auto;page-break-after:auto;page-break-inside:avoid}}
+h1{display:none}.crop img,.crop img:focus,a{-webkit-tap-highlight-color:transparent}.grid,.header,.loader{text-align:center}body{font-family:Montserrat,sans-serif;font-size:12px;margin:0}.grid{display:none;overflow:auto;max-width:960px;margin:15px auto auto;padding-left:12px}.athumb{vertical-align:top;position:relative;float:left;width:32.5%;min-width:32.5%;margin:2px;background-size:cover;-webkit-transition:all .1s ease-in;-webkit-transform:scale(1);-ms-transition:all .1s ease-in;-ms-transform:scale(1);-moz-transition:all .1s ease-in;-moz-transform:scale(1);transition:all .1s ease-in;transform:scale(1)}.crop,.crop img{position:absolute}.athumb::before{content:"";display:block;padding-top:100%}.crop{height:100%;overflow:hidden;top:0;left:0;bottom:0;right:0}.crop img{display:block;min-width:100%;min-height:100%;margin:auto;top:-100%;right:-100%;bottom:-100%;left:-100%}.athumb:hover{box-shadow:0 0 15px #000;z-index:900;-webkit-transition:all .1s ease-in;-webkit-transform:scale(1.025);-ms-transition:all .1s ease-in;-ms-transform:scale(1.025);-moz-transition:all .1s ease-in;-moz-transform:scale(1.025);transition:all .1s ease-in;transform:scale(1.025)}.header{width:100%}.header img{padding-bottom:10px}.header::after{display:block;margin-top:10px;content:" ";width:100%;height:1px;background-color:#000}.back img{width:35px;height:35px;margin:10px}.loader{padding:1em;margin:auto;display:block}.loader svg{width:330px;height:330px;fill:#000}@media (max-width:960px){.athumb{width:48%;margin:1%}.grid{padding-left:0}.crop img{min-width:0;max-width:50vw}}
+.caption{
+    display: none;
+    font-weight: bold;
+    font-size: 2em;
+    position: absolute;
+    text-align: left;
+    top: 0;
+    margin: 5px;
+    color: white;
+    background-color: black;
+    background-color: rgba(0,0,0,0.5);
+    height: 100%;
+}
+.caption span{
+  position: absolute;
+  bottom: 0;
+}
+.caption:hover{
+  display: block;
+}
+
+@media print{.grid{max-width:20cm;margin:auto}.back{display:none}.athumb{width:1cm;margin:0.05cm;page-break-before:auto;page-break-after:auto;page-break-inside:avoid}}
 
     </style>
 </head>
@@ -36,7 +58,7 @@ h1{display:none}.crop img,.crop img:focus,a{-webkit-tap-highlight-color:transpar
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script>
-function getRSSFeed(){$.getJSON("./rssfeed",function(e){if(e.error){if(console.log("Error Loading RSS feed"),retryCount--,retryCount>0)return void setTimeout(getRSSFeed,1e3);location.reload()}else $.each(e.items,function(){var e=$(this)[0]["media:content"].url.split("?")[0]+"?quality=.8&format=jpg&height=315",t=$(this)[0].link,r=$(this)[0].title;$(".grid").append("<div class='athumb'><div class='crop'><a href='"+t+"?xrs=_s.photoGrid' target='_blank'><img src='"+e+"' alt='"+r+"'></a><div class='caption'>"+r+"</div></div></div>")}),$(".loader").remove(),$(".grid").fadeIn("fast")})}var retryCount=3;$(document).ready(function(){getRSSFeed()});
+function getRSSFeed(){$.getJSON("./rssfeed",function(e){if(e.error){if(console.log("Error Loading RSS feed"),retryCount--,retryCount>0)return void setTimeout(getRSSFeed,1e3);location.reload()}else $.each(e.items,function(){var e=$(this)[0]["media:content"].url.split("?")[0]+"?quality=.8&format=jpg&height=315",t=$(this)[0].link,r=$(this)[0].title;$(".grid").append("<div class='athumb'><div class='crop'><a href='"+t+"?xrs=_s.photoGrid' target='_blank'><img src='"+e+"' alt='"+r+"'></a><div class='caption'><span>"+r+"</span></div></div></div>")}),$(".loader").remove(),$(".grid").fadeIn("fast")})}var retryCount=3;$(document).ready(function(){getRSSFeed()});
 </script>
 </body>
 </html>
