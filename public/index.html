@@ -36,7 +36,7 @@ h1{display:none}.crop img,.crop img:focus,a{-webkit-tap-highlight-color:transpar
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script>
-function getRSSFeed(){$.getJSON("./rssfeed",function(e){if(e.error){if(console.log("Error Loading RSS feed"),retryCount--,retryCount>0)return void setTimeout(getRSSFeed,1e3);location.reload()}else $.each(e.items,function(){var e=$(this)[0]["media:content"].url.split("?")[0]+"?quality=.8&format=jpg&height=315",t=$(this)[0].link,r=$(this)[0].title;$(".grid").append("<div class='athumb'><div class='crop'><a href='"+t+"?xrs=_s.photoGrid' target='_blank'><img src='"+e+"' alt='"+r+"'></a></div></div>")}),$(".loader").remove(),$(".grid").fadeIn("fast")})}var retryCount=3;$(document).ready(function(){getRSSFeed()});
+function getRSSFeed(){$.getJSON("./rssfeed",function(e){if(e.error){if(console.log("Error Loading RSS feed"),retryCount--,retryCount>0)return void setTimeout(getRSSFeed,1e3);location.reload()}else $.each(e.items,function(){var e=$(this)[0]["media:content"].url.split("?")[0]+"?quality=.8&format=jpg&height=315",t=$(this)[0].link,r=$(this)[0].title;$(".grid").append("<div class='athumb'><div class='crop'><a href='"+t+"?xrs=_s.photoGrid' target='_blank'><img src='"+e+"' alt='"+r+"'></a><div class='caption>"+r+"</div></div></div>")}),$(".loader").remove(),$(".grid").fadeIn("fast")})}var retryCount=3;$(document).ready(function(){getRSSFeed()});
 </script>
 </body>
 </html>
