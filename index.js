@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(markoExpress());
 app.use(secure);
 app.disable('x-powered-by');
-client.set("timestamp", Date.parse("now"));
+client.set("timestamp", Date.parse("now").subtract(2).hours());
 
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
