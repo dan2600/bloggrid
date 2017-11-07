@@ -64,6 +64,7 @@ updateNewsFeed();
 app.get('/t', function(req, res) {
     res.marko(template, {
         items: newsJSON.items,
+        newsJSON: newsJSON
     });
 });
 
