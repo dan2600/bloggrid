@@ -1,7 +1,10 @@
 'use strict';
 //Dependencies 
 var compression = require('compression');
+require('marko/node-require');
 var express = require('express');
+var markoExpress = require('marko/express');
+var template = require('./template');
 var app = express();
 var path = require("path");
 var bodyParser = require('body-parser');
@@ -9,6 +12,7 @@ var FeedMe = require('feedme');
 var client = require('redis').createClient(process.env.REDIS_URL);
 var http = require('http').Server(app);
 var rssreqest = require('http');
+
 var port = process.env.PORT || 8080;
 require('datejs');
 //Setup
@@ -18,12 +22,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(markoExpress());
 app.disable('x-powered-by');
 var newsJSON = "";
-
-
 function updateNewsFeed(){
-
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
 
@@ -34,6 +36,7 @@ client.get("timestamp", function(err, reply) {
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
                         console.log("Newfeed Not Updated, error reading rss");
+                        setTimeout(updateNewsFeed, 300000);
                     });
                 });
                 parser.on('end', () => {
@@ -42,6 +45,7 @@ client.get("timestamp", function(err, reply) {
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
                         console.log("Newfeed Updated");
+                        setTimeout(updateNewsFeed, 1800000);
                     });
                 });
                 ror.pipe(parser);
@@ -49,16 +53,21 @@ client.get("timestamp", function(err, reply) {
         } else {
             client.get("xmlCache", function(err, reply) {
                 newsJSON = reply;
-                console.log("Newfeed Not Updated");
+                console.log("Newsfeed Not Updated");
+                setTimeout(updateNewsFeed, 1800000);
             });
         }
     });
 }
-
 updateNewsFeed();
 
-
-
+app.get('/t', function(req, res) {
+    res.marko(template, {
+        name: 'Frank',
+        count: 30,
+        colors: ['red', 'green', 'blue']
+    });
+});
 
 //RSS Feed to JSON Parser
 app.get('/rssfeed', function(req, res) {
