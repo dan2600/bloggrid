@@ -62,6 +62,8 @@ client.get("timestamp", function(err, reply) {
 updateNewsFeed();
 
 app.get('/t', function(req, res) {
+    console.log("sending"+newsJSON);
+    console.log("sending items"+newsJSON.items);
     res.marko(template, {
         items: newsJSON.items,
         newsJSON: newsJSON
