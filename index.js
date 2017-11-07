@@ -4,7 +4,7 @@ var compression = require('compression');
 require('marko/node-require');
 var express = require('express');
 var markoExpress = require('marko/express');
-var template = require('./template');
+var page = require('./page');
 var app = express();
 var path = require("path");
 var bodyParser = require('body-parser');
@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({
 app.use(markoExpress());
 app.disable('x-powered-by');
 var newsJSON = "";
+
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
@@ -59,11 +60,11 @@ client.get("timestamp", function(err, reply) {
     });
 }
 updateNewsFeed();
-app.get('/t', function(req, res) {
-    console.log("sending items"+JSON.parse(newsJSON).items);
+
+app.get('/', function(req, res) {
     var items = JSON.parse(newsJSON).items;
-    res.marko(template, {
-        items: items,
+    res.marko(page, {
+        items: newsJSON.items,
     });
 });
 
@@ -71,11 +72,6 @@ app.get('/t', function(req, res) {
 app.get('/rssfeed', function(req, res) {
     res.set('content-type', 'text/json');
     res.send(newsJSON);
-});
-
-app.get('/rssfeed2', function(req, res) {
-    res.set('content-type', 'text/json');
-    res.send(newsJSON.items);
 });
 
 app.get('/*', function(req, res) {
