@@ -21,7 +21,7 @@
 </div>
 <div class="container">
 <div class="grid">
-<div class="athumb" for(item in newsJSON.items)><div class="crop"><a href=item.link+"?xrs=_s.photoGrid" target="_blank"><img src=item.url.split("?")[0]+"?quality=.8&format=jpg&height=315" alt=item.title></a><div class="caption"><span>item.title</span></div></div></div>
+<div class="athumb" for(item in newsJSON.items)><div class="crop"><a href=${item.link+"?xrs=_s.photoGrid"} target="_blank"><img src=${item.url.split("?")[0]+"?quality=.8&format=jpg&height=315"} alt=${item.title}></a><div class="caption"><span>${item.title}</span></div></div></div>
 </div>
 </div>
 </body>
