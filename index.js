@@ -15,6 +15,7 @@ var rssreqest = require('http');
 var secure = require('express-force-https');
 var port = process.env.PORT || 8080;
 var newsJSON = "";
+var retryCount = 0;
 require('datejs');
 //Setup
 app.use(compression());
@@ -36,7 +37,12 @@ client.get("timestamp", function(err, reply) {
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
-                        console.warn("Newfeed Not Updated, error reading rss");
+                        console.warn("WARN: News feed Not Updated, error reading rss");
+                        retryCount++;
+                        if(retryCount > 3)
+                        {
+                            console.error("ERROR: Unable to update news feed after "+retryCount+" attempts");
+                        }
                         setTimeout(updateNewsFeed, 300000);
                     });
                 });
@@ -45,7 +51,8 @@ client.get("timestamp", function(err, reply) {
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
-                        console.info("Newfeed Updated");
+                        retryCount = 0;
+                        console.info("INFO: News feed updated");
                         setTimeout(updateNewsFeed, 1800000);
                     });
                 });
@@ -54,7 +61,7 @@ client.get("timestamp", function(err, reply) {
         } else {
             client.get("xmlCache", function(err, reply) {
                 newsJSON = reply;
-                console.info("Newsfeed Not Updated");
+                console.info("INFO: News feed not updated");
                 setTimeout(updateNewsFeed, 1800000);
             });
         }
@@ -70,6 +77,6 @@ app.get('/*', function(req, res) {
 });
 
 http.listen(port, function() {
-    console.log(`listening on ${port}`);
+    console.log(`INFO: listening on ${port}`);
 });
 
