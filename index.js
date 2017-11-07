@@ -16,7 +16,6 @@ var secure = require('express-force-https');
 var port = process.env.PORT || 8080;
 var newsJSON = "";
 require('datejs');
-
 //Setup
 app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
@@ -37,7 +36,7 @@ client.get("timestamp", function(err, reply) {
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
-                        console.log("Newfeed Not Updated, error reading rss");
+                        console.warn("Newfeed Not Updated, error reading rss");
                         setTimeout(updateNewsFeed, 300000);
                     });
                 });
@@ -46,7 +45,7 @@ client.get("timestamp", function(err, reply) {
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     client.get("xmlCache", function(err, reply) {
                         newsJSON = reply;
-                        console.log("Newfeed Updated");
+                        console.info("Newfeed Updated");
                         setTimeout(updateNewsFeed, 1800000);
                     });
                 });
@@ -55,7 +54,7 @@ client.get("timestamp", function(err, reply) {
         } else {
             client.get("xmlCache", function(err, reply) {
                 newsJSON = reply;
-                console.log("Newsfeed Not Updated");
+                console.info("Newsfeed Not Updated");
                 setTimeout(updateNewsFeed, 1800000);
             });
         }
