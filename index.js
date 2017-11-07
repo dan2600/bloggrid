@@ -63,9 +63,7 @@ updateNewsFeed();
 
 app.get('/t', function(req, res) {
     res.marko(template, {
-        name: 'Frank',
-        count: 30,
-        colors: ['red', 'green', 'blue']
+        items: newsJSON.items,
     });
 });
 
