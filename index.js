@@ -28,7 +28,6 @@ var newsJSON = "";
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
-
         if (oldTime.add(1).hours() < Date.parse("now")) {
             rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
                 var parser = new FeedMe(true);
@@ -60,9 +59,7 @@ client.get("timestamp", function(err, reply) {
     });
 }
 updateNewsFeed();
-
 app.get('/t', function(req, res) {
-    console.log("sending"+newsJSON);
     console.log("sending items"+newsJSON.items);
     res.marko(template, {
         items: newsJSON.items,
