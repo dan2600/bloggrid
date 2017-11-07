@@ -63,24 +63,14 @@ client.get("timestamp", function(err, reply) {
 }
 updateNewsFeed();
 
-app.get('/', function(req, res) {
+app.get('/*', function(req, res) {
     var items = JSON.parse(newsJSON).items;
     res.marko(page, {
         items: items,
     });
 });
 
-//RSS Feed to JSON Parser
-app.get('/rssfeed', function(req, res) {
-    res.set('content-type', 'text/json');
-    res.send(newsJSON);
-});
-
-app.get('/*', function(req, res) {
-    res.status(404);
-    res.send("Error 404");
-});
-
 http.listen(port, function() {
     console.log(`listening on ${port}`);
 });
+
