@@ -32,7 +32,7 @@ function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
         if (oldTime.add(1).hours() < Date.parse("now")) {
-            rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
+            rssreqest.get('http://www.newnownext.com/feed', (ror) => {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
