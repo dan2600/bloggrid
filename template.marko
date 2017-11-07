@@ -19,7 +19,7 @@
 <h1>Vh1 News Stories</h1>
 <br><h2>Touch Photo for Story</h2>
 </div>
-<div class=container>
+<div class="container">
 <div class="loader" title="0">
 <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
 <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
@@ -33,9 +33,5 @@
 </div>
 <div class="grid"></div>
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script>
-function getRSSFeed(){$.getJSON("./rssfeed",function(e){if(e.error){if(console.log("Error Loading RSS feed"),retryCount--,retryCount>0)return void setTimeout(getRSSFeed,1e3);location.reload()}else $.each(e.items,function(){var e=$(this)[0]["media:content"].url.split("?")[0]+"?quality=.8&format=jpg&height=315",t=$(this)[0].link,r=$(this)[0].title;$(".grid").append("<div class='athumb'><div class='crop'><a href='"+t+"?xrs=_s.photoGrid' target='_blank'><img src='"+e+"' alt='"+r+"'></a><div class='caption'><span>"+r+"</span></div></div></div>")}),$(".loader").remove(),$(".grid").fadeIn("fast")})}var retryCount=3;$(document).ready(function(){getRSSFeed()});
-</script>
 </body>
 </html>
