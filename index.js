@@ -12,9 +12,10 @@ var FeedMe = require('feedme');
 var client = require('redis').createClient(process.env.REDIS_URL);
 var http = require('http').Server(app);
 var rssreqest = require('http');
-
 var port = process.env.PORT || 8080;
+var newsJSON = "";
 require('datejs');
+
 //Setup
 app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
@@ -24,7 +25,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(markoExpress());
 app.disable('x-powered-by');
-var newsJSON = "";
 
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
