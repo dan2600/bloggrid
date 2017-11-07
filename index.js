@@ -19,11 +19,12 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.disable('x-powered-by');
+var newsJSON = "";
 
-//RSS Feed to JSON Parser
-app.get('/rssfeed', function(req, res) {
 
-    client.get("timestamp", function(err, reply) {
+function updateNewsFeed(){
+
+client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
 
         if (oldTime.add(1).hours() < Date.parse("now")) {
@@ -32,7 +33,8 @@ app.get('/rssfeed', function(req, res) {
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
                         res.set('content-type', 'text/json');
-                        res.send(reply);
+                        newsJSON = reply;
+                        console.log("Newfeed Not Updated, error reading rss");
                     });
                 });
                 parser.on('end', () => {
@@ -40,18 +42,30 @@ app.get('/rssfeed', function(req, res) {
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     client.get("xmlCache", function(err, reply) {
                         res.set('content-type', 'text/json');
-                        res.send(reply);
+                        newsJSON = reply;
+                        console.log("Newfeed Updated");
                     });
                 });
                 ror.pipe(parser);
             });
         } else {
             client.get("xmlCache", function(err, reply) {
-                res.set('content-type', 'text/json');
-                res.send(reply);
+                newsJSON = reply;
+                console.log("Newfeed Not Updated");
             });
         }
     });
+}
+
+updateNewsFeed();
+
+
+
+
+//RSS Feed to JSON Parser
+app.get('/rssfeed', function(req, res) {
+    res.set('content-type', 'text/json');
+    res.send(newsJSON);
 });
 
 
