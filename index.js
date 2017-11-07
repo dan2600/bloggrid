@@ -62,8 +62,7 @@ updateNewsFeed();
 app.get('/t', function(req, res) {
     console.log("sending items"+newsJSON.items);
     res.marko(template, {
-        items: newsJSON.items,
-        newsJSON: newsJSON
+        items: JSON.parse(newsJSON).items,
     });
 });
 
@@ -73,6 +72,10 @@ app.get('/rssfeed', function(req, res) {
     res.send(newsJSON);
 });
 
+app.get('/rssfeed2', function(req, res) {
+    res.set('content-type', 'text/json');
+    res.send(newsJSON.items);
+});
 
 app.get('/*', function(req, res) {
     res.status(404);
