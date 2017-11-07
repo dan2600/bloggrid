@@ -12,6 +12,7 @@ var FeedMe = require('feedme');
 var client = require('redis').createClient(process.env.REDIS_URL);
 var http = require('http').Server(app);
 var rssreqest = require('http');
+var secure = require('express-force-https');
 var port = process.env.PORT || 8080;
 var newsJSON = "";
 require('datejs');
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(markoExpress());
+app.use(secure);
 app.disable('x-powered-by');
 
 function updateNewsFeed(){
