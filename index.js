@@ -32,7 +32,6 @@ client.get("timestamp", function(err, reply) {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
-                        res.set('content-type', 'text/json');
                         newsJSON = reply;
                         console.log("Newfeed Not Updated, error reading rss");
                     });
@@ -41,7 +40,6 @@ client.get("timestamp", function(err, reply) {
                     client.set("timestamp", Date.parse("now"));
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     client.get("xmlCache", function(err, reply) {
-                        res.set('content-type', 'text/json');
                         newsJSON = reply;
                         console.log("Newfeed Updated");
                     });
