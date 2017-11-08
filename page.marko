@@ -276,13 +276,14 @@ h2 {
           transform: translate3d(100%, 0, 0);
 }
 
-.athumb:hover .caption span {
+.caption span {
     bottom: 0;
     opacity: .5;
 }
 
 
-.showCaps:checked ~ .caption > .caption span{
+
+#showCaps:checked + .caption span{
 	opacity: 1;
   	bottom: 0;
 }
@@ -293,7 +294,7 @@ h2 {
 <body>
 <div class="back"><a href="https://instagram.com/vh1"><img src="instagram-logo.svg" alt="Instagram Logo"></a></div>
 <div class="mToggle">
-	  <label class="switch"><input class="showCaps" type="checkbox" /><div></div></label>
+	  <label class="switch"><input id="showCaps" class="showCaps" type="checkbox" /><div></div></label>
 </div>
 <div class="header">
 <a href="https://instagram.com/vh1"><img src="vh1-logo.svg" alt="VH1 Logo" height=40></a>
