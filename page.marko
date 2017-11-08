@@ -282,12 +282,10 @@ h2 {
 }
 
 
-.caption span{
-  opacity: 1;
+
+.showCaps[type="checkbox"]:checked + .caption{
+	  opacity: 1;
   bottom: 0;
-}
-.showCaps:not(:checked) ~ .caption span{
-  opacity: 0;
 }
 
 
