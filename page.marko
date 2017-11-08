@@ -231,26 +231,18 @@ h2 {
         display: none
     }
 }
-
-.mToggle{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-
-
 .switch input {
   position: absolute;
   opacity: 0;
 }
 
-/**
- * 1. Adjust this to size
- */
+
 
 .switch {
-  display: inline-block;
+  display: block;
+      position: absolute;
+    top: 10px;
+    right: 10px;
   font-size: 25px; /* 1 */
   height: 1em;
   width: 2em;
@@ -283,24 +275,23 @@ h2 {
 
 
 
-#showCaps:checked + .caption span{
+.switch input:checked ~ .container {
 	opacity: 1;
-  	bottom: 0;
+  	background-color: black;
 }
 
 
     </style>
 </head>
 <body>
+
 <div class="back"><a href="https://instagram.com/vh1"><img src="instagram-logo.svg" alt="Instagram Logo"></a></div>
-<div class="mToggle">
-	  <label class="switch"><input id="showCaps" class="showCaps" type="checkbox" /><div></div></label>
-</div>
 <div class="header">
 <a href="https://instagram.com/vh1"><img src="vh1-logo.svg" alt="VH1 Logo" height=40></a>
 <h1 class="shead">Vh1 News Stories</h1>
 <h2>Tap Photo for Story</h2>
 </div>
+<label class="switch"><input id="showCaps" class="showCaps" type="checkbox" /><div></div></label>
 <div class="container">
 <div class="grid">
 <div class="athumb" for(item in input.items)><div class="crop"><a href=item.link+"?xrs=_s.newsGrid" target="_blank"><img src=item["media:content"].url.split("?")[0].replace("http", "https")+"?quality=.8&format=jpg&height=315" alt=item.title></a><div class="caption"><span>${item.title}</span></div></div></div>
