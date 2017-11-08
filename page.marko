@@ -268,9 +268,9 @@ h2 {
           transform: translate3d(100%, 0, 0);
 }
 
-
-input[type=checkbox]:checked ~ label ~ .container {
-width: 500px;
+.mobileShow {
+    opacity: 1;
+    bottom: 0;
 }
 
 
@@ -284,7 +284,7 @@ width: 500px;
 <h1 class="shead">Vh1 News Stories</h1>
 <h2>Tap Photo for Story</h2>
 </div>
-<label class="switch"><input id="showCaps" class="showCaps" type="checkbox" /><div></div></label>
+<label class="switch"><input onclick='toggleCaptions()' id="showCaps" class="showCaps" type="checkbox" /><div></div></label>
 <div class="container">
 <div class="grid">
 <div class="athumb" for(item in input.items)><div class="crop"><a href=item.link+"?xrs=_s.newsGrid" target="_blank"><img src=item["media:content"].url.split("?")[0].replace("http", "https")+"?quality=.8&format=jpg&height=315" alt=item.title></a><div class="caption"><span>${item.title}</span></div></div></div>
@@ -292,6 +292,10 @@ width: 500px;
 <div class="footer"></div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-<script>WebFont.load({google:{families:["Montserrat:400,700"]}});</script>
+<script>WebFont.load({google:{families:["Montserrat:400,700"]}});
+function toggleCaptions(){
+document.querySelectorAll('.caption span').forEach(function(e){e.classList.toggle('mobileShow')});
+}
+</script>
 </body>
 </html>
