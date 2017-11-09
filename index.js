@@ -31,7 +31,7 @@ app.disable('x-powered-by');
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
-        if (oldTime.add(1).hours() < Date.parse("now")) {
+        if (oldTime.add(13).minutes() < Date.parse("now")) {
             rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
@@ -43,7 +43,7 @@ client.get("timestamp", function(err, reply) {
                         {
                             console.error("ERROR: Unable to update news feed after "+retryCount+" attempts");
                         }
-                        setTimeout(updateNewsFeed, 300000);
+                        setTimeout(updateNewsFeed, 120000);
                     });
                 });
                 parser.on('end', () => {
@@ -53,7 +53,7 @@ client.get("timestamp", function(err, reply) {
                         newsJSON = reply;
                         retryCount = 0;
                         console.info("INFO: News feed updated");
-                        setTimeout(updateNewsFeed, 1800000);
+                        setTimeout(updateNewsFeed, 900000);
                     });
                 });
                 ror.pipe(parser);
@@ -62,7 +62,7 @@ client.get("timestamp", function(err, reply) {
             client.get("xmlCache", function(err, reply) {
                 newsJSON = reply;
                 console.info("INFO: News feed not updated");
-                setTimeout(updateNewsFeed, 1800000);
+                setTimeout(updateNewsFeed, 900000);
             });
         }
     });
