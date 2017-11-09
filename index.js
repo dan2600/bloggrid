@@ -16,6 +16,7 @@ var secure = require('express-force-https');
 var port = process.env.PORT || 8080;
 var newsJSON = "";
 var retryCount = 0;
+const config = require('./config');
 require('datejs');
 //Setup
 app.use(compression());
@@ -32,7 +33,7 @@ function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
         if (oldTime.add(13).minutes() < Date.parse("now")) {
-            rssreqest.get('http://www.vh1.com/news/feed', (ror) => {
+            rssreqest.get(config.rssURL, (ror) => {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
@@ -85,6 +86,7 @@ app.get('/*', function(req, res) {
     var items = parseJSONitems(newsJSON);
     res.marko(page, {
         items: items,
+        pageData: config.pageData
     });
 });
 
