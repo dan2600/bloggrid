@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(markoExpress());
 app.use(secure);
 app.disable('x-powered-by');
+
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
@@ -66,6 +67,7 @@ client.get("timestamp", function(err, reply) {
         }
     });
 }
+
 updateNewsFeed();
 
 function parseJSONitems(j){
@@ -80,7 +82,6 @@ function parseJSONitems(j){
 }
 
 app.get('/*', function(req, res) {
-
     var items = parseJSONitems(newsJSON);
     res.marko(page, {
         items: items,
@@ -90,4 +91,3 @@ app.get('/*', function(req, res) {
 http.listen(port, function() {
     console.log(`INFO: listening on ${port}`);
 });
-
