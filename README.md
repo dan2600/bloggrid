@@ -1,2 +1,2 @@
 # bloggrid
-Vh1 Blog Post Grid
+Vh1 News Article Grid 
