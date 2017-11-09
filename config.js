@@ -6,6 +6,8 @@ exports.config = {
 		"instagramURL": "https://instagram.com/vh1",
 		"pageDescription": "Your ultimate source for celebrity news, Love and Hip Hop, music news, celebrity gossip and pop culture.",
 		"pageTitle": "Celebrity News, Love and Hip Hop, Music News, Celebrity Gossip and Pop Culture | VH1 News",
-		"googleID": "UA-109434559-1"
+		"googleID": "UA-109434559-1",
+		"switchOnColor":"#000",
+		"fontFamily":"Montserrat:400,700"
 	}
 }

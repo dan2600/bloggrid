@@ -28,8 +28,6 @@ app.use(markoExpress());
 app.use(secure);
 app.disable('x-powered-by');
 
-console.log("hi"+config.rssURL);
-
 if(process.env.NO_REDIS)
 {
     function updateNewsFeed(){
@@ -41,6 +39,7 @@ if(process.env.NO_REDIS)
                });
                 parser.on('end', () => {
                     newsJSON = JSON.stringify(parser.done());
+                    setTimeout(updateNewsFeed, 120000);
                 });
                 ror.pipe(parser);
             });
