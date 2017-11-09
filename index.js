@@ -1,5 +1,5 @@
 'use strict';
-//Dependencies 
+//Dependencies
 var compression = require('compression');
 require('marko/node-require');
 var express = require('express');
@@ -9,14 +9,13 @@ var app = express();
 var path = require("path");
 var bodyParser = require('body-parser');
 var FeedMe = require('feedme');
-var client = require('redis').createClient(process.env.REDIS_URL);
 var http = require('http').Server(app);
 var rssreqest = require('http');
 var secure = require('express-force-https');
 var port = process.env.PORT || 8080;
 var newsJSON = "";
 var retryCount = 0;
-const config = require('./config');
+const config = require('./config').config;
 require('datejs');
 //Setup
 app.use(compression());
@@ -29,6 +28,29 @@ app.use(markoExpress());
 app.use(secure);
 app.disable('x-powered-by');
 
+console.log("hi"+config.rssURL);
+
+if(process.env.NO_REDIS)
+{
+    function updateNewsFeed(){
+        rssreqest.get(config.rssURL, (ror) => {
+                var parser = new FeedMe(true);
+                parser.on('error', (d) => {
+                    console.warn("WARN: News feed Not Updated, error reading rss");
+                    newsJSON = {};
+               });
+                parser.on('end', () => {
+                    newsJSON = JSON.stringify(parser.done());
+                });
+                ror.pipe(parser);
+            });
+    }
+
+updateNewsFeed();
+}
+else
+{
+var client = require('redis').createClient(process.env.REDIS_URL);
 function updateNewsFeed(){
 client.get("timestamp", function(err, reply) {
         var oldTime = Date.parse(reply);
@@ -68,8 +90,9 @@ client.get("timestamp", function(err, reply) {
         }
     });
 }
-
 updateNewsFeed();
+}
+
 
 function parseJSONitems(j){
     try{
