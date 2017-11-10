@@ -22,7 +22,7 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 //Setup
 app.use(compression());
-app.use(express.static(path.join(__dirname, "public", { maxage: '30d' })));
+app.use(express.static(path.join(__dirname, "public"), { maxage: '30d' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
