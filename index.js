@@ -18,6 +18,8 @@ var newsJSON = "";
 var retryCount = 0;
 const config = require('./config').config;
 require('datejs');
+const imagemin = require('imagemin');
+const imageminJpegtran = require('imagemin-jpegtran');
 //Setup
 app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
@@ -51,9 +53,18 @@ var filename = uniqueFilename('./public/images') + ".jpg";
 Jimp.read(URL, function (err, makem) {
     if (err) throw err;
     makem.quality(90)
-    .write(filename);
-    newsJSON[index]["media:content"]["url"] =  filename.split("public/")[1];
-    newsJSON[index].optimized = true;
+    .write(filename, function(){
+         newsJSON[index]["media:content"]["url"] =  filename.split("public/")[1];
+         newsJSON[index].optimized = true;
+         imagemin([filename], './public/images', {
+    plugins: [
+        imageminJpegtran()
+    ]
+}).then(files => {
+});
+
+    });
+   
 });
 }
 
