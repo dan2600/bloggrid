@@ -22,7 +22,7 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 //Setup
 app.use(compression());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public", { maxage: '30d' })));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -168,11 +168,6 @@ function parseJSONitems(j){
 }
 
 app.get('/*', function(req, res) {
-
-  if (req.url.indexOf("images/") === 0 || req.url.indexOf("/images/") === 0) {
-    res.setHeader("Cache-Control", "public, max-age=2592000");
-    res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
-  }
     res.marko(page, {
         items: newsJSON,
         pageData: config.pageData
