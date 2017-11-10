@@ -157,6 +157,11 @@ function parseJSONitems(j){
 }
 
 app.get('/*', function(req, res) {
+
+  if (req.url.indexOf("images/") === 0 || req.url.indexOf("/images/") === 0) {
+    res.setHeader("Cache-Control", "public, max-age=2592000");
+    res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
+  }
     res.marko(page, {
         items: newsJSON,
         pageData: config.pageData
