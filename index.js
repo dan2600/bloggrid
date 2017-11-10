@@ -6,6 +6,7 @@ var express = require('express');
 var markoExpress = require('marko/express');
 var page = require('./page');
 var app = express();
+const fs = require('fs');
 var path = require("path");
 var bodyParser = require('body-parser');
 var FeedMe = require('feedme');
@@ -27,9 +28,40 @@ app.use(bodyParser.urlencoded({
 app.use(markoExpress());
 app.use(secure);
 app.disable('x-powered-by');
+const directory = './public/images';
+var Jimp = require("jimp");
+
+function clearTemp(){
+    fs.readdir(directory, (err, files) => {
+  if (err) throw err;
+
+  for (const file of files) {
+    fs.unlink(path.join(directory, file), err => {
+      if (err) throw err;
+    });
+  }
+});
+}
+
+
+function makeSmall(URL, index){
+var uniqueFilename = require('unique-filename');
+var filename = uniqueFilename('./public/images') + ".jpg";
+
+Jimp.read(URL, function (err, makem) {
+    if (err) throw err;
+    makem.quality(90)
+    .write(filename);
+    newsJSON[index]["media:content"]["url"] =  filename.split("public/")[1];
+    newsJSON[index].optimized = true;
+});
+}
+
+
 
 if(process.env.NO_REDIS)
 {
+    console.log("development mode");
     function updateNewsFeed(){
         rssreqest.get(config.rssURL, (ror) => {
                 var parser = new FeedMe(true);
@@ -38,7 +70,12 @@ if(process.env.NO_REDIS)
                     newsJSON = {};
                });
                 parser.on('end', () => {
-                    newsJSON = JSON.stringify(parser.done());
+                    newsJSON = parseJSONitems(JSON.stringify(parser.done()));
+                    clearTemp();
+                    for(var i=0; i < newsJSON.length; i++){
+                        newsJSON[i]["media:content"]["url"] = newsJSON[i]["media:content"]["url"].split("?")[0]+"?quality=.8&format=jpg&height=315";
+                        makeSmall(newsJSON[i]["media:content"]["url"], i);
+                    }
                     setTimeout(updateNewsFeed, 120000);
                 });
                 ror.pipe(parser);
@@ -58,7 +95,12 @@ client.get("timestamp", function(err, reply) {
                 var parser = new FeedMe(true);
                 parser.on('error', (d) => {
                     client.get("xmlCache", function(err, reply) {
-                        newsJSON = reply;
+                        newsJSON = parseJSONitems(reply);
+                        clearTemp();
+                    for(var i=0; i < newsJSON.length; i++){
+                        newsJSON[i]["media:content"]["url"] = newsJSON[i]["media:content"]["url"].split("?")[0]+"?quality=.8&format=jpg&height=315";
+                        makeSmall(newsJSON[i]["media:content"]["url"], i);
+                    }
                         console.warn("WARN: News feed Not Updated, error reading rss");
                         retryCount++;
                         if(retryCount > 3)
@@ -72,7 +114,12 @@ client.get("timestamp", function(err, reply) {
                     client.set("timestamp", Date.parse("now"));
                     client.set("xmlCache", JSON.stringify(parser.done()));
                     client.get("xmlCache", function(err, reply) {
-                        newsJSON = reply;
+                        newsJSON = parseJSONitems(reply);
+                        clearTemp();
+                    for(var i=0; i < newsJSON.length; i++){
+                        newsJSON[i]["media:content"]["url"] = newsJSON[i]["media:content"]["url"].split("?")[0]+"?quality=.8&format=jpg&height=315";
+                        makeSmall(newsJSON[i]["media:content"]["url"], i);
+                    }
                         retryCount = 0;
                         console.info("INFO: News feed updated");
                         setTimeout(updateNewsFeed, 900000);
@@ -82,7 +129,12 @@ client.get("timestamp", function(err, reply) {
             });
         } else {
             client.get("xmlCache", function(err, reply) {
-                newsJSON = reply;
+                newsJSON = parseJSONitems(reply);
+                clearTemp();
+                    for(var i=0; i < newsJSON.length; i++){
+                        newsJSON[i]["media:content"]["url"] = newsJSON[i]["media:content"]["url"].split("?")[0]+"?quality=.8&format=jpg&height=315";
+                        makeSmall(newsJSON[i]["media:content"]["url"], i);
+                    }
                 console.info("INFO: News feed not updated");
                 setTimeout(updateNewsFeed, 900000);
             });
@@ -105,9 +157,8 @@ function parseJSONitems(j){
 }
 
 app.get('/*', function(req, res) {
-    var items = parseJSONitems(newsJSON);
     res.marko(page, {
-        items: items,
+        items: newsJSON,
         pageData: config.pageData
     });
 });
