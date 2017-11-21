@@ -28,6 +28,7 @@
     "imagemin-jpegtran": "^5.0.2",
     "jimp": "^0.2.28",
     "marko": "^4.5.6",
+    "ontime": "0.0.3",
     "redis": "^2.8.0",
     "request": "^2.83.0",
     "serve-favicon": "^2.4.5",
