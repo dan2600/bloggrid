@@ -6,9 +6,7 @@ var express = require("express");
 var markoExpress = require("marko/express");
 var page = require("./page");
 var app = express();
-const fs = require("fs");
 var path = require("path");
-var bodyParser = require("body-parser");
 var FeedMe = require("feedme");
 var http = require("http").Server(app);
 var rssreqest = require("http");
@@ -17,185 +15,68 @@ var ontime = require("ontime");
 var port = process.env.PORT || 8080;
 var newsJSON = "";
 var retryCount = 0;
-const config = require("./config").config;
+const config = require("./config");
 require("datejs");
-const imagemin = require("imagemin");
-const imageminJpegtran = require("imagemin-jpegtran");
+
 //Setup
 app.use(compression());
-app.use(express.static(path.join(__dirname, "public"), {maxage: "30d"}));
-app.use(bodyParser.json());
-app.use(
-    bodyParser.urlencoded({
-        extended: true
-    })
-);
+app.use(express.static(path.join(__dirname, "public"), { maxage: "30d" }));
 app.use(markoExpress());
 app.use(secure);
 app.disable("x-powered-by");
 const directory = "./public/images";
-var Jimp = require("jimp");
+var clearTemp = require("./lib/clearTemp");
+var makeSmall = require("./lib/makeSmall");
+var parseJSONitems = require("./lib/parseJSONitems");
+var updateNewsFeed;
 
-function clearTemp() {
-    fs.readdir(directory, (err, files) => {
-        if (err) throw err;
-
-        for (const file of files) {
-            fs.unlink(path.join(directory, file), err => {
-                if (err) throw err;
-            });
-        }
-    });
-}
-
-function makeSmall(URL, index) {
-    var uniqueFilename = require("unique-filename");
-    var filename = uniqueFilename("./public/images") + ".jpg";
-
-    Jimp.read(URL, function(err, makem) {
-        if (err) throw err;
-        makem.quality(90).write(filename, function() {
-            newsJSON[index]["media:content"]["url"] = filename.split("public/")[1];
-            newsJSON[index].optimized = true;
-            imagemin([filename], "./public/images", {
-                plugins: [imageminJpegtran()]
-            }).then(files => {});
-        });
-    });
-}
-
-if (process.env.NO_REDIS) {
-    console.log("development mode");
-
-    function updateNewsFeed() {
-        console.log("updating news feed from source...");
-        rssreqest.get(config.rssURL, ror => {
-            var parser = new FeedMe(true);
-            parser.on("error", d => {
-                console.warn("WARN: News feed Not Updated, error reading rss");
-                newsJSON = {};
-            });
-            parser.on("end", () => {
-                newsJSON = parseJSONitems(JSON.stringify(parser.done()));
-                clearTemp();
-                for (var i = 0; i < newsJSON.length; i++) {
-                    newsJSON[i]["media:content"]["url"] =
-                        newsJSON[i]["media:content"]["url"].split("?")[0] +
-                        "?quality=.8&format=jpg&height=315";
-                    makeSmall(newsJSON[i]["media:content"]["url"], i);
-                }
-                console.log("news feed updated");
-            });
-            ror.pipe(parser);
-        });
-    }
-
-    updateNewsFeed();
-    ontime(
-        {
-            cycle: ["00:00", "30:00"]
-        },
-        function(ot) {
-            console.log("Checking for news feed updates");
-            updateNewsFeed();
-            ot.done();
-            return;
-        }
-    );
+if (!process.env.REDIS_URL) {
+  console.log("development mode");
+  updateNewsFeed = require("./lib/updateNewsFeedNoCache");
+  updateNewsFeed(directory, json => {
+    newsJSON = json;
+  });
 } else {
-    var client = require("redis").createClient(process.env.REDIS_URL);
-
-    function updateNewsFeed() {
-        console.log("updating news feed from source...");
-        client.get("timestamp", function(err, reply) {
-            var oldTime = Date.parse(reply);
-            if (oldTime.add(29).minutes() < Date.parse("now")) {
-                rssreqest.get(config.rssURL, ror => {
-                    var parser = new FeedMe(true);
-                    parser.on("error", d => {
-                        client.get("xmlCache", function(err, reply) {
-                            newsJSON = parseJSONitems(reply);
-                            clearTemp();
-                            for (var i = 0; i < newsJSON.length; i++) {
-                                newsJSON[i]["media:content"]["url"] =
-                                    newsJSON[i]["media:content"]["url"].split("?")[0] +
-                                    "?quality=.8&format=jpg&height=315";
-                                makeSmall(newsJSON[i]["media:content"]["url"], i);
-                            }
-                            console.warn("WARN: News feed Not Updated, error reading rss");
-                            retryCount++;
-                            if (retryCount > 3) {
-                                console.error(
-                                    "ERROR: Unable to update news feed after " + retryCount + " attempts"
-                                );
-                            }
-                            setTimeout(updateNewsFeed, 120000);
-                        });
-                    });
-                    parser.on("end", () => {
-                        client.set("timestamp", Date.parse("now"));
-                        client.set("xmlCache", JSON.stringify(parser.done()));
-                        client.get("xmlCache", function(err, reply) {
-                            newsJSON = parseJSONitems(reply);
-                            clearTemp();
-                            for (var i = 0; i < newsJSON.length; i++) {
-                                newsJSON[i]["media:content"]["url"] =
-                                    newsJSON[i]["media:content"]["url"].split("?")[0] +
-                                    "?quality=.8&format=jpg&height=315";
-                                makeSmall(newsJSON[i]["media:content"]["url"], i);
-                            }
-                            retryCount = 0;
-                            console.info("INFO: News feed updated");
-                        });
-                    });
-                    ror.pipe(parser);
-                });
-            } else {
-                client.get("xmlCache", function(err, reply) {
-                    newsJSON = parseJSONitems(reply);
-                    clearTemp();
-                    for (var i = 0; i < newsJSON.length; i++) {
-                        newsJSON[i]["media:content"]["url"] =
-                            newsJSON[i]["media:content"]["url"].split("?")[0] +
-                            "?quality=.8&format=jpg&height=315";
-                        makeSmall(newsJSON[i]["media:content"]["url"], i);
-                    }
-                    console.info("INFO: News feed not updated");
-                });
-            }
-        });
+  console.log("production mode");
+  updateNewsFeed = require("./lib/updateNewsFeed");
+  updateNewsFeed(directory, (json, error) => {
+    newsJSON = json;
+    if (error) {
+      updateNewsFeed(directory, (json, error) => {
+        newsJSON = json;
+      });
     }
-    updateNewsFeed();
-    ontime(
-        {
-            cycle: ["00:00", "30:00"]
-        },
-        function(ot) {
-            console.log("Checking for news feed updates");
-            updateNewsFeed();
-            ot.done();
-            return;
-        }
-    );
+  });
 }
-
-function parseJSONitems(j) {
-    try {
-        var x = JSON.parse(j).items;
-    } catch (e) {
-        console.log("Error Reading JSON");
-        return "{}";
-    }
-    return x;
-}
+ontime(
+  {
+    cycle: ["00:00"]
+  },
+  function(ot) {
+    console.log("Checking for news feed updates");
+    updateNewsFeed(directory, (json, error) => {
+      newsJSON = json;
+      if (error) {
+        console.log("error loading RSS, retrying in 1 minute");
+        setTimeout(function() {
+          updateNewsFeed(directory, (json, error) => {
+            newsJSON = json;
+          });
+        }, 30000);
+      }
+    });
+    ot.done();
+    return;
+  }
+);
 
 app.get("/*", function(req, res) {
-    res.marko(page, {
-        items: newsJSON,
-        pageData: config.pageData
-    });
+  res.marko(page, {
+    items: newsJSON,
+    pageData: config.pageData
+  });
 });
 
 http.listen(port, function() {
-    console.log(`INFO: listening on ${port}`);
+  console.log(`INFO: listening on ${port}`);
 });

@@ -1,4 +1,4 @@
-exports.config = {
+module.exports = {
 	"rssURL": "http://www.vh1.com/news/feed",
 	"pageData": {
 		"header": "Vh1 News Stories",
