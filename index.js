@@ -13,10 +13,6 @@ var secure = require('express-force-https');
 var ontime = require('ontime');
 var port = process.env.PORT || 8080;
 const config = require('./config');
-require('datejs');
-var clearTemp = require('./lib/clearTemp');
-var makeSmall = require('./lib/makeSmall');
-var parseJSONitems = require('./lib/parseJSONitems');
 var updateNewsFeed;
 
 //Setup
@@ -72,7 +68,7 @@ ontime(
 );
 
 //Routes
-app.get('/*', function(req, res) {
+app.get('/*',(req, res) => {
   res.marko(page, {
     items: newsJSON,
     pageData: config.pageData
@@ -80,6 +76,6 @@ app.get('/*', function(req, res) {
 });
 
 //Server
-http.listen(port, function() {
+http.listen(port,() => {
   console.log('INFO: listening on ' + port);
 });
