@@ -2,7 +2,7 @@
 <html class="no-js" lang="en-us">
 <head>
 <if(input.dataReady === false)>
-<script>window.location.href = "http://www.vh1.com/news";</script>
+<script>window.location.href = input.pageData.errorDirect;</script>
 </if>
 <script async src="https://www.googletagmanager.com/gtag/js?id=${input.pageData.googleID}"></script>
 <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${input.pageData.googleID}");</script>
