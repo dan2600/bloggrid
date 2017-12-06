@@ -27,12 +27,12 @@
     "imagemin": "^5.3.1",
     "imagemin-jpegtran": "^5.0.2",
     "jimp": "^0.2.28",
-    "marko": "^4.5.6",
+    "marko": "^4.7.1",
     "ontime": "0.0.3",
     "redis": "^2.8.0",
     "request": "^2.83.0",
     "serve-favicon": "^2.4.5",
-    "uglify-js": "^3.1.6",
+    "uglify-js": "^3.2.1",
     "unique-filename": "^1.1.0"
   }
 }

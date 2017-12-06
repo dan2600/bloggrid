@@ -27,21 +27,14 @@ var newsJSON = '';
 //Get RSS information
 if (!process.env.REDIS_URL) {
   console.log('development mode');
-  updateNewsFeed = require('./lib/updateNewsFeedNoCache');
-  updateNewsFeed(directory, json => {
-    newsJSON = json;
-  });
+  var newsFeed = require('./lib/updateNewsFeedNoCache');
+  var theFeed = new newsFeed;
+  theFeed.update(directory);
 } else {
   console.log('production mode');
-  updateNewsFeed = require('./lib/updateNewsFeed');
-  updateNewsFeed(directory, (json, error) => {
-    newsJSON = json;
-    if (error) {
-      updateNewsFeed(directory, (json, error) => {
-        newsJSON = json;
-      });
-    }
-  });
+  var newsFeed = require('./lib/updateNewsFeed');
+  var theFeed = new newsFeed;
+  theFeed.update(directory);
 }
 
 //Schedule Hourly RSS updates
@@ -51,17 +44,7 @@ ontime(
   },
   function(ot) {
     console.log('Checking for news feed updates');
-    updateNewsFeed(directory, (json, error) => {
-      newsJSON = json;
-      if (error) {
-        console.log('error loading RSS, retrying in 1 minute');
-        setTimeout(function() {
-          updateNewsFeed(directory, (json, error) => {
-            newsJSON = json;
-          });
-        }, 30000);
-      }
-    });
+    theFeed.update(directory);
     ot.done();
     return;
   }
@@ -70,8 +53,9 @@ ontime(
 //Routes
 app.get('/*',(req, res) => {
   res.marko(page, {
-    items: newsJSON,
-    pageData: config.pageData
+    items: theFeed.dataOBJ,
+    pageData: config.pageData,
+    dataReady: theFeed.dataReady
   });
 });
 
