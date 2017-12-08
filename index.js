@@ -24,7 +24,7 @@ const imgDir = './public/images';
 
 //Build RSS information object
   var newsFeed = require('./lib/updateNewsFeed');
-  var theFeed = new newsFeed;
+  var theFeed = new newsFeed(config.rssURL);
   theFeed.update(imgDir);
 
 //Schedule Hourly RSS updates
@@ -33,7 +33,7 @@ ontime(
     cycle: ['00:00']
   },
   (ot) => {
-    console.log('Checking for news feed updates');
+    console.info('INFO: Checking for news feed updates');
     theFeed.update(imgDir);
     ot.done();
     return;
@@ -51,5 +51,5 @@ app.get('/*',(req, res) => {
 
 //Server
 http.listen(port,() => {
-  console.log('INFO: listening on ' + port);
+  console.info('INFO: listening on ' + port);
 });
