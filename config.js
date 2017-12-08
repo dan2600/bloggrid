@@ -9,7 +9,7 @@ module.exports = {
       "pageTitle":"Celebrity News, Love and Hip Hop, Music News, Celebrity Gossip and Pop Culture | VH1 News",
       "googleID":"UA-109434559-1",
       "switchOnColor":"#000",
-      "xrsCode":"?xrs=_s.newsGrid";
+      "xrsCode":"?xrs=_s.newsGrid",
       "fontFamily":"Montserrat:400,700"
    }
 }
